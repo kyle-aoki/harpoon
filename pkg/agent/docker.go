@@ -97,7 +97,7 @@ func UpdateDeployment() {
 		&container.HostConfig{PortBindings: portBinding},
 		&network.NetworkingConfig{}, &v1.Platform{}, "",
 	))
-	log.Println("created", image, "container:", createResponse.ID[16:])
+	log.Println("created", image, "container:", createResponse.ID[:16])
 	log.Println("public port", hostPort, "mapped to private port", containerPort)
 
 	// ##########################################################################
@@ -111,7 +111,7 @@ func UpdateDeployment() {
 	}
 
 	util.Check(cli.ContainerStart(context.Background(), createResponse.ID, types.ContainerStartOptions{}))
-	log.Println("started container", createResponse.ID[16:])
+	log.Println("started container", createResponse.ID[:16])
 
 	log.Println("switching nginx reverse proxy to", hostPort)
 	SwitchNginxReverseProxyPort(hostPort)
