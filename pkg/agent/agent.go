@@ -45,7 +45,7 @@ func AgentDeploy(adi *AgentDeployInput) *AgentDeployOutput {
 		Version:    adi.Version,
 		Port:       adi.Port,
 	}
-	jam = true
+	forceCycle = true
 	return &AgentDeployOutput{}
 }
 

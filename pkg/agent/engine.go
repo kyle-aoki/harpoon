@@ -35,11 +35,6 @@ type Deployment struct {
 	Port        string
 }
 
-var lastCycle = time.Now()
-var jam = false
-
-const harpoonEngineCadence = time.Second * 60
-
 var harpoonTarget *HarpoonTarget
 var activeDeployment *Deployment
 
@@ -59,38 +54,48 @@ func HarpoonEngine() {
 		DeleteInactive()
 
 		if harpoonTarget == nil && activeDeployment == nil {
+			log.Println("no target or deployment active, harpoon on standby")
 			harpoonState.EngineStatus = STANDBY
 			continue
 		}
 
 		if harpoonTarget == nil && activeDeployment != nil {
+			log.Println("deployment active, harpoon is active")
 			harpoonState.EngineStatus = ACTIVE
 			continue
 		}
 
 		if harpoonTarget != nil && activeDeployment == nil {
+			log.Println("target set and no active deployment, harpoon is updating")
 			harpoonState.EngineStatus = UPDATING
 			UpdateDeployment()
-			harpoonState.EngineStatus = ACTIVE
+			forceCycle = true
 			continue
 		}
 
 		if harpoonTarget != nil && activeDeployment != nil {
 			if ShouldUpdateDeployment() {
+				log.Println("target does not match deployment, updating deployment")
 				harpoonState.EngineStatus = UPDATING
 				UpdateDeployment()
 			}
+			log.Println("target and deployment match, harpoon is active")
 			harpoonState.EngineStatus = ACTIVE
 			continue
 		}
 	}
 }
 
+var lastCycle = time.Now()
+var forceCycle = false
+
+const harpoonEngineCadence = time.Second * 60
+
 func EngineWait() {
-	for !jam && time.Since(lastCycle) < harpoonEngineCadence {
+	for !forceCycle && time.Since(lastCycle) < harpoonEngineCadence {
 		time.Sleep(time.Second * 2)
 	}
-	jam, lastCycle = false, time.Now()
+	forceCycle, lastCycle = false, time.Now()
 }
 
 func EngineRecover() {
