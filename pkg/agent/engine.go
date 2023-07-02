@@ -78,6 +78,7 @@ func HarpoonEngine() {
 				log.Println("target does not match deployment, updating deployment")
 				harpoonState.EngineStatus = UPDATING
 				UpdateDeployment()
+				continue
 			}
 			log.Println("target and deployment match, harpoon is active")
 			harpoonState.EngineStatus = ACTIVE

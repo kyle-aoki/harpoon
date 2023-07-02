@@ -75,8 +75,8 @@ func FindActiveDeployment() {
 }
 
 func UpdateDeployment() {
-	log.Println("updating deployment")
 	image := fmt.Sprintf("%s:%s", harpoonTarget.Repository, harpoonTarget.Version)
+	log.Println("updating deployment with image", image)
 
 	readCloser := util.Must(cli.ImagePull(context.Background(), image, types.ImagePullOptions{}))
 	_ = util.Must(io.ReadAll(readCloser))
@@ -97,6 +97,8 @@ func UpdateDeployment() {
 		&container.HostConfig{PortBindings: portBinding},
 		&network.NetworkingConfig{}, &v1.Platform{}, "",
 	))
+	log.Println("created", image, "container:", createResponse.ID[16:])
+	log.Println("public port", hostPort, "mapped to private port", containerPort)
 
 	// ##########################################################################
 
@@ -109,10 +111,9 @@ func UpdateDeployment() {
 	}
 
 	util.Check(cli.ContainerStart(context.Background(), createResponse.ID, types.ContainerStartOptions{}))
-	if activeDeployment == nil {
-		activeDeployment = &Deployment{}
-	}
+	log.Println("started container", createResponse.ID[16:])
 
+	log.Println("switching nginx reverse proxy to", hostPort)
 	SwitchNginxReverseProxyPort(hostPort)
 	DeleteInactive()
 	harpoonState.EngineStatus = ACTIVE
