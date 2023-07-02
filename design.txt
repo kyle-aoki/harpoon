@@ -1,0 +1,9 @@
+nginx reverse proxies http://0.0.0.0 --> http://0.0.0.0:11111
+                                     --> http://0.0.0.0:22222
+
+
+2. run image on alternate port
+3. generate new nginx config
+4. set nginx config
+5. reload nginx
+6. shut off old service
