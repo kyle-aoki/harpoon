@@ -53,7 +53,6 @@ func DeleteInactive() {
 }
 
 func FindActiveDeployment() {
-	fmt.Println(localContainers)
 	if len(localContainers) != 1 {
 		return
 	}

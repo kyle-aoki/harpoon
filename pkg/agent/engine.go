@@ -88,7 +88,7 @@ func HarpoonEngine() {
 }
 
 var lastCycle = time.Now()
-var forceCycle = false
+var forceCycle = true
 
 const harpoonEngineCadence = time.Second * 60
 
