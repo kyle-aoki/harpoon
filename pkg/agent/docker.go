@@ -100,10 +100,13 @@ func UpdateDeployment() {
 
 	// ##########################################################################
 
-	activeDeployment.ID = createResponse.ID
-	activeDeployment.Repository = harpoonTarget.Repository
-	activeDeployment.Version = harpoonTarget.Version
-	activeDeployment.Port = harpoonTarget.Port
+	activeDeployment = &Deployment{
+		ID:          createResponse.ID,
+		HarpoonPort: hostPort,
+		Repository:  harpoonTarget.Repository,
+		Version:     harpoonTarget.Version,
+		Port:        harpoonTarget.Port,
+	}
 
 	util.Check(cli.ContainerStart(context.Background(), createResponse.ID, types.ContainerStartOptions{}))
 	if activeDeployment == nil {

@@ -41,7 +41,7 @@ var jam = false
 const harpoonEngineCadence = time.Second * 60
 
 var harpoonTarget *HarpoonTarget
-var activeDeployment *Deployment = &Deployment{}
+var activeDeployment *Deployment
 
 func ShouldUpdateDeployment() bool {
 	return harpoonTarget.Repository != activeDeployment.Repository ||
